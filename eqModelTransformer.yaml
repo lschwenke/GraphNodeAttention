@@ -1,0 +1,104 @@
+seml:
+  executable: eqModelTrain.py
+  name: eqModelTrain
+  output_dir: logs
+  project_root_dir: .
+
+
+slurm:
+  experiments_per_job: 5
+  max_simultaneous_jobs: 6  # Restrict number of simultaneously running jobs per job array
+  sbatch_options:
+    gres: gpu:1       # num GPUs
+    mem: 35G          # memory
+    cpus-per-task: 96  # num cores
+    time: 1-08:00     # max time, D-HH:MM
+
+fixed:
+
+  init.model_chosen: 'main' # ['main,'nofeatures']
+  init.seed_value: 1 # seed value for everything (still something makes the run not deterministic atm.)
+  init.patience: 15 # patience while running
+
+  data.doFT: True # do the SFA as preprocessing
+  
+  model.useEmbed: False # currently always false and a mapping is used as embedding
+  model.useSaves: False # use already trained models rather than train again
+
+
+  model.steps: ['max'] # Which steps to try out for LASA. ['max', 'sum'] #only those two are supported
+  model.layerCombis: ['hl'] # ['lh', 'hl'] as alternative for LASA combination steps
+  model.localAvgThresholds: [[0.5,0.5],[1.0,1.0],[1.4,1.4]] # thresholds for lasa
+
+  model.header: 6 # number of transformer heads
+
+  model.numOfAttentionLayers: 2 # number of transformer layers
+
+  model.dffFaktor: 0.5 # dff size in ralation to dmodel, e.g. if dmodel = 16 and dffFaktor = 0.5, dff is 8
+
+  model.transDropout: 0.0 # transformer dropout. Not suggested.
+
+  model.lastDropout: 0.4 # dropout at the end of the model
+
+  model.gcnNodes: 32 # number of gcn nodes
+
+  model.finalLayer: 256 # final dense layer size
+  model.filters: [16,32] # number of filters for the cnn part
+  model.cnnKernal: 25 # kernal size for the cnn part (make sure it fits the ncoef size)
+
+  model.modelN: 'transformer' # Current file is optimized for the transformer model. Alternatives: 'old','bloem' 
+  model.doAbstract: True # do lasa after training (only for transformer)
+  model.doMixedLasa: False # switch dimensions and apply lasa again
+
+  model.epochs: 200 # number of max epochs
+
+  
+
+grid:
+
+  data.network_choice: # which of both networks to train
+      type: choice
+      options: 
+        - network1
+        - network2
+
+  
+
+  model.doStations: # if doStations is false the model uses the following shape: (time points, features * stations) else (stations, features * time points). This is important for lasa in the sense of what dimension to reduce. Only works with the transformer
+      type: choice
+      options:
+        - True
+        - False
+
+  data.random_state_here: # state for data splits
+    type: choice
+    options: 
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+
+  data.nbins: # number of symbols used for sfa
+    type: choice
+    options: 
+      - 5
+      - 6
+      - 7
+
+  data.ncoef: # number of coefs used from the SFA. This also is afterwards the size of the last dim times the number of features
+    type: choice
+    options: 
+      - 125
+      - 250
+
+  data.iLen: # length of the time window used for the prediction. 1000 = 10s
+    type: choice
+    options:
+      - 1000
+      - 900
+      - 800
+      - 700
+      - 600
+      - 500
+      - 400

@@ -1,0 +1,151 @@
+seml:
+  executable: eqModelTrain.py
+  name: eqModelTrain
+  output_dir: logs
+  project_root_dir: .
+
+
+slurm:
+  experiments_per_job: 4
+  max_simultaneous_jobs: 4  # Restrict number of simultaneously running jobs per job array
+  sbatch_options:
+    gres: gpu:1       # num GPUs
+    mem: 35G          # memory
+    cpus-per-task: 96  # num cores
+    time: 1-08:00     # max time, D-HH:MM
+
+fixed:
+
+  init.model_chosen: 'main' # ['main,'nofeatures']
+  init.seed_value: 1 # seed value for everything (still something makes the run not deterministic atm.)
+
+  data.doFT: True # do the SFA as preprocessing
+  
+  model.useEmbed: False # currently always false and a mapping is used as embedding
+  model.useSaves: False # use already trained models rather than train again
+
+
+
+
+  model.header: 6 # number of transformer heads
+
+  model.numOfAttentionLayers: 2 # number of transformer layers
+
+  model.dffFaktor: 0.5 # dff size in ralation to dmodel, e.g. if dmodel = 16 and dffFaktor = 0.5, dff is 8
+
+  model.transDropout: 0.0 # transformer dropout. Not suggested.
+
+  model.lastDropout: 0.4 # dropout at the end of the model
+
+  model.doAbstract: False # can only be used with the transformer to apply LASA
+  model.doMixedLasa: False # switch dimensions and apply lasa again
+
+  data.nbins: 6 # number of SFA symbols
+
+  data.ncoef: 125 # number of coefs used from the SFA. This also is afterwards the size of the last dim times the number of features
+
+
+  #only needed if lasa is active
+  model.steps: ['max'] # Which steps to try out for LASA. ['max', 'sum'] #only those two are supported
+  model.layerCombis: ['hl'] # ['lh', 'hl'] as alternative for LASA combination steps
+  model.localAvgThresholds: [[0.5,0.5],[1.0,1.0],[1.4,1.4]] #[[0.5,0.5],[0.8,0.8],[1.2,1.2],[1.5,1.5]]
+
+  model.doStations: False # Only works with the transformer
+
+
+  
+
+grid:
+
+  model.cnnKernal: # cnn kernals sizes
+      type: choice
+      options: 
+        - 25
+        - 125
+        
+  model.modelN: # 3 models which use cnns
+      type: choice
+      options: 
+        - 'old'
+        - 'bloem'
+
+  data.network_choice:  # which of both networks to use
+      type: choice
+      options: 
+        - network1
+        - network2
+
+  data.random_state_here:  # random state for data split
+    type: choice
+    options: 
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+
+  data.iLen: # length of the time window used for the prediction. 1000 = 10s
+    type: choice
+    options:
+      - 1000
+      - 900
+      - 800
+      - 700
+      - 600
+      - 500
+      - 400
+
+oldModel: # the original model settings
+  grid:
+    model.gcnNodes: 
+      type: choice
+      options: 
+        - 64
+
+    model.finalLayer: 
+      type: choice
+      options: 
+        - 128
+
+    model.filters: 
+      type: choice
+      options: 
+        - [32, 64]
+
+    init.patience:
+      type: choice
+      options: 
+        - 10
+
+    model.epochs: 
+      type: choice
+      options: 
+        - 100
+
+newModel: # adapted settings from the SFA Transformer model
+  grid:
+    model.gcnNodes: 
+      type: choice
+      options: 
+        - 32
+        
+    model.finalLayer: 
+      type: choice
+      options: 
+        - 256
+
+    model.filters: 
+      type: choice
+      options: 
+        - [16, 32]
+    
+    init.patience:
+      type: choice
+      options: 
+        - 15
+
+    model.epochs:
+      type: choice
+      options: 
+        - 200
+  
