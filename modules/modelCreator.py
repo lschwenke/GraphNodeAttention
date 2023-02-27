@@ -9,7 +9,6 @@ from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping
 from modules import helper
 from modules import transformer
 from modules import LASA
-from modules import GIA
 from sklearn import metrics
 from sklearn.preprocessing import StandardScaler
 from pyts.approximation import SymbolicAggregateApproximation

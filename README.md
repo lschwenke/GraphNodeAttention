@@ -1,6 +1,6 @@
 # AttentionGraphNodeIdenfitication
 
-This code is the experiment code for the paper "Identifying Informative Nodes in Attributed Spatial Sensor Networks using Attention for Symbolic Abstraction in a GNN-based Modeling Approach". It models an extrinsic regression task using different GCN-based models, one including a transformer. Further including LASA (an  attention-based abstraction technique) to find more relevant nodes.
+This is the experiment code for the paper "Identifying Informative Nodes in Attributed Spatial Sensor Networks using Attention for Symbolic Abstraction in a GNN-based Modeling Approach". It models an extrinsic regression task using different GCN-based models, one including a transformer. Further including LASA (an  attention-based abstraction technique) to find more relevant nodes.
 
 
 ### Data
