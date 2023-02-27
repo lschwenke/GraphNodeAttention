@@ -1,13 +1,13 @@
-# Title
+# AttentionGraphNodeIdenfitication
 
 This code is the experiment code for the paper "Identifying Informative Nodes in Attributed Spatial Sensor Networks using Attention for Symbolic Abstraction in a GNN-based Modeling Approach". It models an extrinsic regression task using different GCN-based models, one including a transformer. Further including LASA (an  attention-based abstraction technique) to find more relevant nodes.
 
 
 ### Data
 
-The data (too big to host on github itself) can be downloaded at: https://zenodo.org/record/5767221
-In the data folder, the input_ci.npy file should be placed
-The input_cw.npy file should be placed in data/othernetwork 
+The data (too big to host on github itself) can be downloaded at: https://zenodo.org/record/5767221 <br>
+In the data folder, the input_ci.npy file should be placed <br>
+The input_cw.npy file should be placed in data/othernetwork  <br>
 
 ### Dependencies installation guide
 
@@ -19,23 +19,23 @@ Requirements for the installation guide (other version might or might not work a
 - conda==22.9.0
 - pip==22.3
 
-We suggest to use a fresh conda environment and also to use mamba as on top solution to conda, else an dependency solve freeze can occur.
+We suggest to use a fresh conda environment and also to use mamba as on top solution to conda, else an dependency solve freeze can occur.<br>
 Create a new environment and run the following lines:
 
 mamba install -c conda-forge tensorflow-gpu==2.6.2
 
 Install the following dependencies using pip install, one at a time (else dependency errors can occur):
-seml==0.3.7 
-spektral==1.2.0 
-cython==0.29.33
-uea_ucr_datasets==0.1.2
-pandas==1.4.4
-dill==0.3.6
-scikit-learn==1.1.2
-scipy==1.9.1
-pyts==0.12.0
-numpy==1.19.5
-gast==0.4.0 
+- seml==0.3.7 
+- spektral==1.2.0 
+- cython==0.29.33
+- uea_ucr_datasets==0.1.2
+- pandas==1.4.4
+- dill==0.3.6
+- scikit-learn==1.1.2
+- scipy==1.9.1
+- pyts==0.12.0
+- numpy==1.19.5
+- gast==0.4.0 
 
 
 ### How to run
@@ -60,7 +60,7 @@ We have two options to run the experiment. Either just test out single configura
 
 ## Cite and publications
 
-This code represents the used model for the following publication:
+This code represents the used model for the following publication:<br>
 "Identifying Informative Nodes in Attributed Spatial Sensor Networks using Attention for Symbolic Abstraction in a GNN-based Modeling Approach" (TODO Link)
 
 If you use, build upon this work or if it helped in any other way, please cite the linked publication.
