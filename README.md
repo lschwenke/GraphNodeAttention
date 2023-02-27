@@ -19,7 +19,7 @@ Requirements for the installation guide (other version might or might not work a
 - conda==22.9.0
 - pip==22.3
 
-We suggest to use a fresh conda environment and also to use mamba as on top solution to conda, else an dependency solve freeze can occur.<br>
+We suggest using a fresh conda environment and also to use mamba as on top solution to conda, else an dependency solve freeze can occur.<br>
 Create a new environment and run the following lines:
 
 mamba install -c conda-forge tensorflow-gpu==2.6.2
