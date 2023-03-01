@@ -12,7 +12,6 @@ from modules import LASA
 from sklearn import metrics
 from sklearn.preprocessing import StandardScaler
 from pyts.approximation import SymbolicAggregateApproximation
-import antropy as ant
 import math
 import os
 
@@ -136,123 +135,23 @@ def getWeightName(name, fold, symbols, layers, abstractionType, header, learning
 
 
 
-def calcComplexityMetrics(newVal, newTest):
-    valShifts = []
-    smallerValSet = []
-    for val in newVal:
-        shifts = -1
-        smallerSet = 2
-        lastVal = val[0][0]
-        rise = -3
-        timeSkip = 1
-        for v in val[1:]:
-            v = v[0]
-
-            if v == -2:
-                timeSkip += 1
-            elif helper.truncate((v - lastVal) / timeSkip) != rise:
-                shifts += 1
-                smallerSet += 1
-                rise = helper.truncate((v - lastVal) / timeSkip)
-                lastVal = v
-                timeSkip = 1
-            else:
-                lastVal = v
-        valShifts.append(shifts)
-        smallerValSet.append(smallerSet)
-
-    #valShifts = np.average(valShifts)
-    #smallerValSet = np.average(smallerValSet)
-
-
-    testShifts = []
-    smallerTestSet = []
-    print(newTest.shape)
-    for val in newTest:
-        shifts = -1
-        smallerSet = 2
-        lastVal = val[0][0]
-        rise = -3
-        timeSkip = 1
-        for v in val[1:]:
-            v = v[0]
-            if v == -2:
-                timeSkip += 1
-            elif round(v - lastVal / timeSkip, 1) != rise:
-                shifts += 1
-                smallerSet += 1
-                rise = round(v - lastVal / timeSkip, 1)
-                lastVal = v
-                timeSkip = 1
-            else:
-                lastVal = v
-        testShifts.append(shifts)
-        smallerTestSet.append(smallerSet)
-
-    #testShifts = np.average(testShifts)
-    #smallerTestSet = np.average(smallerTestSet)
-
-    permutationEntropyVal = []
-    spectralEntropyVal = []
-    decompositionEntropyVal = []
-    approximateEntropyVal = []
-    sampleEntropyVal = []
-    complexityEstimationVal = []
-    spectralEntropyTest = []
-    permutationEntropyTest = []
-    decompositionEntropyTest = []
-    approximateEntropyTest = []
-    sampleEntropyTest = []
-    complexityEstimationTest = []
-    
-    print('calc entropies val')
-    for x in newVal.squeeze():
-        permutationEntropyVal.append(ant.perm_entropy(x, normalize=True))
-        spectralEntropyVal.append(ant.spectral_entropy(x, sf=100, method='welch', normalize=True, nperseg = len(x)))
-        decompositionEntropyVal.append(ant.svd_entropy(x, normalize=True))
-        approximateEntropyVal.append(ant.app_entropy(x))
-        sampleEntropyVal.append(ant.sample_entropy(x))
-        complexityEstimationVal.append(helper.ce(x))
-
-    print('calc entropies tests')
-    for x in newTest.squeeze():
-        spectralEntropyTest.append(ant.spectral_entropy(x, sf=100, method='welch', normalize=True, nperseg = len(x)))
-        permutationEntropyTest.append(ant.perm_entropy(x, normalize=True))
-        decompositionEntropyTest.append(ant.svd_entropy(x, normalize=True))
-        approximateEntropyTest.append(ant.app_entropy(x))
-        sampleEntropyTest.append(ant.sample_entropy(x))
-        complexityEstimationTest.append(helper.ce(x))
-
-
-    valLen = len(newVal[0])
-    testLen = len(newTest[0])
-
-    complexityVal = {'permutationsEntropy': permutationEntropyVal, 'spectralEntropy': spectralEntropyVal, 'svdEntropy': decompositionEntropyVal, 'approximateEntropy': approximateEntropyVal, 'sample entropy': sampleEntropyVal, 'CE': complexityEstimationVal}
-    complexityTest = {'permutationsEntropy': permutationEntropyTest, 'spectralEntropy': spectralEntropyTest, 'svdEntropy': decompositionEntropyTest, 'approximateEntropy': approximateEntropyTest, 'sample entropy': sampleEntropyTest, 'CE':  complexityEstimationTest}
-
-    return complexityVal, complexityTest, smallerValSet, smallerTestSet, valShifts, testShifts
-
 # do training for the given model def
 def doAbstractedTraining(trainD, valD, testD, y_train1, y_val, y_testy, BATCH, seed_value, num_of_classes, dataName, fold, symbolCount, num_epochs, numOfAttentionLayers, dmodel, header, dff, skipDebugSaves=False, rMA = None, useEmbed = False, 
-    reductionInt = 3, earlystop = None, useSaves=False, abstractionType=None, thresholdSet=None, order=None, step1=None, step2=None, step3=None, 
-    doMax=False, abstraction = 0, earlyPredictorZ = None, takeAvg = True, rate=0.0, heatLayer = 0, calcComplexity=True, doFidelity=False):
+    earlystop = None, useSaves=False, abstractionType=None, thresholdSet=None, order=None, step1=None, step2=None, step3=None, 
+    doMax=False, abstraction = 0, earlyPredictorZ = None, takeAvg = True, rate=0.0, heatLayer = 0):
     if(order != None):
         combination = order +'-' +step1 +'-' +step2 +'-' +step3
     else:
         combination = None
 
     if abstraction == 2:
-        newTrain, trainReduction, skipCounterTrain = LASA.abstractDataS(trainD, earlyPredictorZ, order, step1, step2, step3, doMax, thresholdSet, takeAvg = takeAvg, heatLayer = heatLayer,useEmbed = useEmbed, doFidelity=doFidelity)
-        newVal, valReduction, skipCounterVal = LASA.abstractDataS(valD, earlyPredictorZ, order, step1, step2, step3, doMax, thresholdSet, takeAvg = takeAvg, heatLayer = heatLayer,useEmbed = useEmbed, doFidelity=doFidelity)
-        newTest, testReduction, skipCounterTest = LASA.abstractDataS(testD, earlyPredictorZ, order, step1, step2, step3, doMax, thresholdSet, takeAvg = takeAvg, heatLayer = heatLayer,useEmbed = useEmbed, doFidelity=doFidelity)
+        newTrain, trainReduction, skipCounterTrain = LASA.abstractDataS(trainD, earlyPredictorZ, order, step1, step2, step3, doMax, thresholdSet, takeAvg = takeAvg, heatLayer = heatLayer,useEmbed = useEmbed, doFidelity=False)
+        newVal, valReduction, skipCounterVal = LASA.abstractDataS(valD, earlyPredictorZ, order, step1, step2, step3, doMax, thresholdSet, takeAvg = takeAvg, heatLayer = heatLayer,useEmbed = useEmbed, doFidelity=False)
+        newTest, testReduction, skipCounterTest = LASA.abstractDataS(testD, earlyPredictorZ, order, step1, step2, step3, doMax, thresholdSet, takeAvg = takeAvg, heatLayer = heatLayer,useEmbed = useEmbed, doFidelity=False)
     elif abstraction == 3:
-        newTrain, trainReduction, skipCounterTrain = LASA.abstractDataS(trainD, earlyPredictorZ, order, step1, step2, step3, doMax, thresholdSet, takeAvg = takeAvg, heatLayer = heatLayer, interpolate=False, useEmbed = useEmbed, doFidelity=doFidelity)
-        newVal, valReduction, skipCounterVal = LASA.abstractDataS(valD, earlyPredictorZ, order, step1, step2, step3, doMax, thresholdSet, takeAvg = takeAvg, heatLayer = heatLayer, interpolate=False, useEmbed = useEmbed, doFidelity=doFidelity)
-        newTest, testReduction, skipCounterTest = LASA.abstractDataS(testD, earlyPredictorZ, order, step1, step2, step3, doMax, thresholdSet, takeAvg = takeAvg, heatLayer = heatLayer, interpolate=False, useEmbed = useEmbed, doFidelity=doFidelity)
-    elif abstraction == 4:
-        newTrain, trainReduction, skipCounterTrain = GIA.abstractDataMixGTM(trainD, rMA, reductionInt, thresholdSet, useEmbed = useEmbed, doFidelity=doFidelity)#abstractDataMix(trainD, rMA)
-        newVal, valReduction, skipCounterVal = GIA.abstractDataMixGTM(valD, rMA, reductionInt, thresholdSet, useEmbed = useEmbed, doFidelity=doFidelity)#abstractDataMix(valD, rMA)
-        newTest, testReduction, skipCounterTest = GIA.abstractDataMixGTM(testD, rMA, reductionInt, thresholdSet, useEmbed = useEmbed, doFidelity=doFidelity)#abstractDataMix(testD, rMA)
+        newTrain, trainReduction, skipCounterTrain = LASA.abstractDataS(trainD, earlyPredictorZ, order, step1, step2, step3, doMax, thresholdSet, takeAvg = takeAvg, heatLayer = heatLayer, interpolate=False, useEmbed = useEmbed, doFidelity=False)
+        newVal, valReduction, skipCounterVal = LASA.abstractDataS(valD, earlyPredictorZ, order, step1, step2, step3, doMax, thresholdSet, takeAvg = takeAvg, heatLayer = heatLayer, interpolate=False, useEmbed = useEmbed, doFidelity=False)
+        newTest, testReduction, skipCounterTest = LASA.abstractDataS(testD, earlyPredictorZ, order, step1, step2, step3, doMax, thresholdSet, takeAvg = takeAvg, heatLayer = heatLayer, interpolate=False, useEmbed = useEmbed, doFidelity=False)
     else:
         newTrain = trainD
         newVal = valD
@@ -264,14 +163,11 @@ def doAbstractedTraining(trainD, valD, testD, y_train1, y_val, y_testy, BATCH, s
         skipCounterVal = 0
         skipCounterTest = 0
         
-    if calcComplexity:
-        complexityVal, complexityTest, smallerValSet, smallerTestSet, valShifts, testShifts = calcComplexityMetrics(newVal, newTest)
-    else: 
-        complexityVal = []
-        complexityTest = []
-        smallerValSet = 0
-        smallerTestSet = 0
-        valShifts, testShifts = 0,0
+    complexityVal = []
+    complexityTest = []
+    smallerValSet = 0
+    smallerTestSet = 0
+    valShifts, testShifts = 0,0
         
     print('newTrain during abstract training:')
     print(newTrain.shape)

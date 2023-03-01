@@ -1,4 +1,4 @@
-# AttentionGraphNodeIdenfitication
+﻿# AttentionGraphNodeIdenfitication
 
 This is the experiment code for the paper "Identifying Informative Nodes in Attributed Spatial Sensor Networks using Attention for Symbolic Abstraction in a GNN-based Modeling Approach". It models an extrinsic regression task using different GCN-based models, one including a transformer. Further including LASA (an  attention-based abstraction technique) to find more relevant nodes.
 
@@ -20,22 +20,15 @@ Requirements for the installation guide (other version might or might not work a
 - pip==22.3
 
 We suggest using a fresh conda environment and also to use mamba as on top solution to conda, else an dependency solve freeze can occur.<br>
-Create a new environment and run the following lines:
+Create a new environment and run the following lines:<br>
+mamba install -c conda-forge python==3.9.13 tensorflow-gpu==2.6.2
 
-mamba install -c conda-forge tensorflow-gpu==2.6.2
+Install the following dependencies using pip install: <br>
+pip install seml==0.3.7 spektral==1.2.0 scipy==1.9.1 pyts==0.12.0 numpy==1.19.5 gast==0.4.0 
 
-Install the following dependencies using pip install, one at a time (else dependency errors can occur):
-- seml==0.3.7 
-- spektral==1.2.0 
-- cython==0.29.33
-- uea_ucr_datasets==0.1.2
-- pandas==1.4.4
-- dill==0.3.6
-- scikit-learn==1.1.2
-- scipy==1.9.1
-- pyts==0.12.0
-- numpy==1.19.5
-- gast==0.4.0 
+
+To use the jupyter notebook: <br>
+pip install --upgrade ipykernel jupyter notebook pyzmq
 
 
 ### How to run
